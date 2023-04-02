@@ -1,0 +1,8 @@
+spritesheet 
+format	- x, y, w, h
+-----------
+duck01	- 0, 0, 32, 32
+duck02	- 0, 31, 32, 32
+pipe 	- 32, 0, 40, 192
+title01	- 72, 0, 99, 43
+title02	- 72, 43, 73, 38
