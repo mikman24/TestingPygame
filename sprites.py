@@ -32,15 +32,16 @@ class Player(pygame.sprite.Sprite):
         self.gameover = False
 
     def update(self):
+        if self.gameover and self.rect.bottom >= HEIGHT:
+            self.rect.center = (WIDTH/2, HEIGHT-self.image.get_height()/2)
+        else:
+            self.fallDown()
+       
+    def fallDown(self):
         self.acc = vec(0, PLAYER_GRAVITY)        
         self.vel += self.acc
         self.pos += self.vel + 0.5*self.acc
         self.rect.center = self.pos
-        if self.gameover:
-            if not self.pos.y < HEIGHT:
-                self.pos = vec(WIDTH/2, HEIGHT - self.image.get_height())
-                self.rect.center = self.pos
-                
 
     def flap(self):
         if not self.gameover:

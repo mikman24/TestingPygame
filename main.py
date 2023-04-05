@@ -45,7 +45,7 @@ class Game:
         # Update game loop
         self.allSprites.update()
         self.obstacles.update()
-        # Die if player hits bottom of screen
+        # Game over if player hits top or bottom of screen
         if self.player.rect.bottom >= HEIGHT or self.player.rect.top <= 0:
             self.player.gotHit()
 
