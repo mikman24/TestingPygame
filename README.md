@@ -1,5 +1,5 @@
 # TestingPygame
-Creating a flappy bird clone
+Creating a flappy bird clone with pygame
 
 The 3 sounds(flap, point, crash) are made with sfxr. 
 
