@@ -28,7 +28,6 @@ class Player(pygame.sprite.Sprite):
         self.pos = vec(WIDTH/2, HEIGHT/2)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
-        self.flapping = False
         self.gameover = False
 
     def update(self):
@@ -38,6 +37,7 @@ class Player(pygame.sprite.Sprite):
             self.fallDown()
        
     def fallDown(self):
+        # pass
         self.acc = vec(0, PLAYER_GRAVITY)        
         self.vel += self.acc
         self.pos += self.vel + 0.5*self.acc
@@ -45,7 +45,6 @@ class Player(pygame.sprite.Sprite):
 
     def flap(self):
         if not self.gameover:
-            self.flapping = True
             self.vel.y = -PLAYER_FLAP
 
     def gotHit(self):
@@ -53,17 +52,17 @@ class Player(pygame.sprite.Sprite):
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, game, x, y, isTop):
-        self._layer = OBSTACLE_LAYER
+        self._layer = OB_LAYER
         self.groups = game.allSprites, game.obstacles
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = self.game.spritesheet.getImage(32, 0, 40, 300)
         self.image.set_colorkey(BLACK)
         if isTop:
-            self.image = pygame.transform.flip(self.image, True, True)
+            self.image = pygame.transform.flip(self.image, False, True)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
     def update(self):
-        pass
+        self.rect.x -= OB_SPEED

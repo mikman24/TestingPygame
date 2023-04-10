@@ -22,14 +22,11 @@ class Game:
 
     def new(self):
         # Start new game
-        self.allSprites = pygame.sprite.Group()
+        self.allSprites = pygame.sprite.LayeredUpdates()
         self.obstacles = pygame.sprite.Group()
         self.player = Player(self)
-        self.allSprites.add(self.player)
-        self.obstacleBottom = Obstacle(self, 40, 300, False)
-        self.obstacles.add(self.obstacleBottom)
-        self.obstacleTop = Obstacle(self, WIDTH-100, -300, True)
-        self.obstacles.add(self.obstacleTop)
+        for o in OB_LIST:
+            Obstacle(self, *o)
         self.run()
 
     def run(self):
@@ -48,6 +45,17 @@ class Game:
         # Game over if player hits top or bottom of screen
         if self.player.rect.bottom >= HEIGHT or self.player.rect.top <= 0:
             self.player.gotHit()
+        # If Obstacles reach left of the screen
+        for o in self.obstacles:
+            if o.rect.right <= 0:
+                o.kill()
+        # Spawn new obstacles to keep the same average number
+        totalGap = OB_GAP * 2 + self.player.image.get_height()
+        while len(self.obstacles) < 6:
+            bottomHeight = random.randrange(92 + totalGap, HEIGHT - 92)
+            Obstacle(self, WIDTH + 40, bottomHeight, False)
+            topHeight = bottomHeight - totalGap - OB_HEIGHT
+            Obstacle(self, WIDTH + 40, topHeight, True)
 
     def events(self):
         # Process player input
