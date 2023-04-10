@@ -1,11 +1,11 @@
 # TestingPygame
 
 ## Contents
-[About](#about)
-[Tutorial followed](#tutorial-followed)
+- [About](#about)
+- [Tutorial followed](#tutorial-followed)
 
 ## About
-Creating a flappy bird clone with pygame by adapting the source code from the tutorial.
+Creating a flappy bird clone with pygame by adapting the source code from the tutorial followed.
 
 The 3 sounds(flap, point, crash) are made with sfxr. 
 
