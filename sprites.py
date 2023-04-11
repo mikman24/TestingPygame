@@ -45,6 +45,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.gameover and self.rect.bottom >= HEIGHT:
             self.rect.center = (WIDTH / 2 , HEIGHT - self.image.get_height() / 2)
+            self.game.playing = False
         else:
             self.fallDown()
        
@@ -56,6 +57,7 @@ class Player(pygame.sprite.Sprite):
 
     def flap(self):
         if not self.gameover:
+            self.game.flapSound.play()
             self.flappingFrame(True)
             self.vel.y = -PLAYER_FLAP
 
@@ -68,16 +70,22 @@ class Obstacle(pygame.sprite.Sprite):
         self.groups = game.allSprites, game.obstacles
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
+        self.top = isTop
         self.image = self.game.spritesheet.getImage(32, 0, 40, 300)
         self.image.set_colorkey(BLACK)
-        if isTop:
+        if self.top:
             self.image = pygame.transform.flip(self.image, False, True)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.gotPoint = False
+        self.obstacleSpeed = OB_SPEED
+
+    def addPoint(self):
+        self.gotPoint = True
 
     def update(self):
-        self.rect.x += OB_SPEED
+        self.rect.x += self.obstacleSpeed
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, game, x):
@@ -88,6 +96,7 @@ class Background(pygame.sprite.Sprite):
         self.image = self.game.background
         self.rect = self.image.get_rect()
         self.rect.x = x
+        self.backgroundSpeed = BACKGROUND_SPEED
 
     def update(self):
-        self.rect.x += BACKGROUND_SPEED
+        self.rect.x += self.backgroundSpeed

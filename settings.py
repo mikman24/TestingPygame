@@ -11,12 +11,15 @@ LIGHT_BLUE = (0, 155, 155)
 TITLE = "Flying Duck"
 ICON = "icon.png"
 SPRITESHEET = "spritesheet.png"
+HIGHSCORE = "highscore.txt"
 BACKGROUND = "background.png"
+FONTNAME = "arial"
 WIDTH = 480
 HEIGHT = 600
 FPS = 60
 
 # Game sounds
+SOUND_VOLUME = 0.4
 SOUND_FLAP = "flap.wav"
 SOUND_POINT = "point.wav"
 SOUND_CRASH = "crash.wav"
