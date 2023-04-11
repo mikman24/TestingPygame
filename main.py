@@ -24,9 +24,12 @@ class Game:
         # Start new game
         self.allSprites = pygame.sprite.LayeredUpdates()
         self.obstacles = pygame.sprite.Group()
+        self.backgrounds = pygame.sprite.Group()
         self.player = Player(self)
         for o in OB_LIST:
             Obstacle(self, *o)
+        Background(self, 0)
+        Background(self, WIDTH)
         self.run()
 
     def run(self):
@@ -41,9 +44,10 @@ class Game:
     def update(self):
         # Update game loop
         self.allSprites.update()
-        self.obstacles.update()
         # Game over if player hits top or bottom of screen
-        if self.player.rect.bottom >= HEIGHT or self.player.rect.top <= 0:
+        # obstacleHits = pygame.sprite.spritecollide(self.player, self.obstacles, False)
+        obstacleHits = False
+        if obstacleHits or self.player.rect.bottom >= HEIGHT or self.player.rect.top <= 0:
             self.player.gotHit()
         # If Obstacles reach left of the screen
         for o in self.obstacles:
@@ -56,6 +60,13 @@ class Game:
             Obstacle(self, WIDTH + 40, bottomHeight, False)
             topHeight = bottomHeight - totalGap - OB_HEIGHT
             Obstacle(self, WIDTH + 40, topHeight, True)
+        # Scroll background
+        for b in self.backgrounds:
+            if b.rect.right <= 0:
+                b.kill()
+                print("killed background")
+        while len(self.backgrounds) < 2:
+            Background(self, WIDTH)
 
     def events(self):
         # Process player input
@@ -71,6 +82,9 @@ class Game:
                     self.running = False
                 if event.key == pygame.K_SPACE:
                     self.player.flap()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    self.player.flappingFrame(False)
 
     def draw(self):
         # Update all drawings
@@ -79,8 +93,9 @@ class Game:
         pygame.display.flip()
 
     def loadAssets(self):
-        # Load spritesheet
+        # Load images
         self.spritesheet = Spritesheet(os.path.join(self.imgDir, SPRITESHEET))
+        self.background = pygame.image.load(os.path.join(self.imgDir, BACKGROUND)).convert()
         # Load sounds
         self.flapSound = pygame.mixer.Sound(os.path.join(self.sndDir, SOUND_FLAP))
         self.pointSound = pygame.mixer.Sound(os.path.join(self.sndDir, SOUND_POINT))

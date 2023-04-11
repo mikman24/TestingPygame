@@ -21,30 +21,42 @@ class Player(pygame.sprite.Sprite):
         self.groups = game.allSprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = self.game.spritesheet.getImage(0, 0, 32, 24)
-        self.image.set_colorkey(BLACK)
+        self.loadImages()
+        self.image = self.downFrame
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2, HEIGHT/2)
-        self.pos = vec(WIDTH/2, HEIGHT/2)
+        self.rect.center = (WIDTH / 2, HEIGHT / 2)
+        self.pos = vec(WIDTH / 2, HEIGHT / 2)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
         self.gameover = False
 
+    def loadImages(self):
+        self.downFrame = self.game.spritesheet.getImage(0, 0, 32, 24)
+        self.downFrame.set_colorkey(BLACK)
+        self.flapFrame = self.game.spritesheet.getImage(0, 24, 32, 24)
+        self.flapFrame.set_colorkey(BLACK)
+
+    def flappingFrame(self, flap):
+        if flap:
+            self.image = self.flapFrame
+        else:
+            self.image = self.downFrame
+
     def update(self):
         if self.gameover and self.rect.bottom >= HEIGHT:
-            self.rect.center = (WIDTH/2, HEIGHT-self.image.get_height()/2)
+            self.rect.center = (WIDTH / 2 , HEIGHT - self.image.get_height() / 2)
         else:
             self.fallDown()
        
     def fallDown(self):
-        # pass
         self.acc = vec(0, PLAYER_GRAVITY)        
         self.vel += self.acc
-        self.pos += self.vel + 0.5*self.acc
+        self.pos += self.vel + 0.5 * self.acc
         self.rect.center = self.pos
 
     def flap(self):
         if not self.gameover:
+            self.flappingFrame(True)
             self.vel.y = -PLAYER_FLAP
 
     def gotHit(self):
@@ -65,4 +77,17 @@ class Obstacle(pygame.sprite.Sprite):
         self.rect.y = y
 
     def update(self):
-        self.rect.x -= OB_SPEED
+        self.rect.x += OB_SPEED
+
+class Background(pygame.sprite.Sprite):
+    def __init__(self, game, x):
+        self._layer = BACKGROUND_LAYER
+        self.groups = game.allSprites, game.backgrounds
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = self.game.background
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+
+    def update(self):
+        self.rect.x += BACKGROUND_SPEED
