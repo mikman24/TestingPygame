@@ -70,6 +70,9 @@ class Game:
             topHeight = bottomHeight - totalGap - OB_HEIGHT
             Obstacle(self, WIDTH + 40, topHeight, True)
         # Scroll background
+        self.scrollBackground()
+
+    def scrollBackground(self):
         for b in self.backgrounds:
             if b.rect.right <= 0:
                 b.kill()
@@ -114,6 +117,51 @@ class Game:
         textRect = textSurface.get_rect()
         textRect.midtop = (x, y)
         self.screen.blit(textSurface, textRect)
+
+    def showStartScreen(self):
+        self.allSprites = pygame.sprite.LayeredUpdates()
+        self.backgrounds = pygame.sprite.Group()
+        self.player = Player(self)
+        Background(self, 0)
+        Background(self, WIDTH)
+        self.titleImageOne = self.spritesheet.getImage(72, 0, 99, 43)
+        self.titleImageOne.set_colorkey(BLACK)
+        self.titleImageOneRect = self.titleImageOne.get_rect()
+        self.titleImageOneRect.midtop = (WIDTH/2, 15)
+        self.titleImageTwo = self.spritesheet.getImage(72, 43, 73, 38)
+        self.titleImageTwo.set_colorkey(BLACK)
+        self.titleImageTwoRect = self.titleImageTwo.get_rect()
+        self.titleImageTwoRect.midtop = (WIDTH/2, 100)
+        self.startScreen = True
+        while self.startScreen:
+            self.clock.tick(FPS)
+            self.eventsStartScreen()
+            self.drawStartScreen()
+        for b in self.backgrounds:
+            b.kill()
+        for s in self.allSprites:
+            s.kill()
+
+    def eventsStartScreen(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.startScreen = False
+                self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.startScreen = False
+                    self.running = False
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    self.startScreen = False
+
+    def drawStartScreen(self):
+        self.screen.fill(BACKGROUND_COLOR)
+        self.allSprites.draw(self.screen)
+        self.screen.blit(self.titleImageOne, self.titleImageOneRect)
+        self.screen.blit(self.titleImageTwo, self.titleImageTwoRect)
+        self.drawText("Press SPACE to play", 22, BLACK, WIDTH/2, HEIGHT*3/4)
+        pygame.display.flip()
 
     def showGameOverScreen(self):
         if not self.running:
@@ -169,6 +217,7 @@ class Game:
         self.crashSound.set_volume(SOUND_VOLUME)
 
 g = Game()
+g.showStartScreen()
 while g.running:
     g.new()
     g.showGameOverScreen()
